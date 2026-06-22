@@ -2,8 +2,8 @@ name: update-jobs
 
 on:
   schedule:
-    - cron: '0 21 * * *'      # 매일 오전 6시(한국시간) 자동 실행
-  workflow_dispatch:           # 버튼으로 수동 실행도 가능
+    - cron: '0 21 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -28,6 +28,10 @@ jobs:
 
       - name: Commit jobs.json
         run: |
+          if [ ! -f jobs.json ]; then
+            echo "jobs.json이 없습니다 (API 키 미설정이거나 응답 없음) — 커밋 건너뜀"
+            exit 0
+          fi
           git config user.name "job-bot"
           git config user.email "job-bot@users.noreply.github.com"
           git add jobs.json
